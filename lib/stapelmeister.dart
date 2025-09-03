@@ -23,11 +23,11 @@ class Stapelmeister extends FlameGame {
   FutureOr<void> onLoad() async {
     super.onLoad();
 
-    camera.viewfinder.anchor = Anchor.topLeft;
+    camera.viewfinder.anchor = Anchor.bottomCenter;
 
-    add(PlayArea());
+    await world.add(PlayArea());
 
     tower = TowerController();
-    add(tower);
+    await world.add(tower);
   }
 }

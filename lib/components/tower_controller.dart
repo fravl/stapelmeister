@@ -26,7 +26,7 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     await _clearAll();
     // Add base block
     final baseX = (game.width - baseWidth) / 2;
-    final baseY = _landingBaseY - blockHeight; 
+    final baseY = _landingBaseY - blockHeight;
 
     final baseBlock = Block(
       position: Vector2(baseX, baseY),
@@ -40,7 +40,12 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     )..state = BlockState.landed;
 
     _stack.add(baseBlock);
-    add(baseBlock);
+    await game.world.add(baseBlock);
+
+    game.camera.viewfinder.position = Vector2(
+      game.width / 2,
+      baseBlock.position.y,
+    );
 
     // Spawn first moving block
     _spawnNext();
@@ -80,7 +85,9 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
 
     // Compute overlap rectangle between current and last along X
     final overlapLeft = current.left >= last.left ? current.left : last.left;
-    final overlapRight = current.right <= last.right ? current.right : last.right;
+    final overlapRight = current.right <= last.right
+        ? current.right
+        : last.right;
     final overlapWidth = overlapRight - overlapLeft;
 
     if (overlapWidth <= 0) {
@@ -101,7 +108,21 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     _stack.add(current);
     _current = null;
 
+    _stepCamera();
+
     _spawnNext();
+  }
+
+  void _stepCamera() {
+    // Move the camera up by one block height
+    final current = game.camera.viewfinder.position;
+
+    final newY = current.y - blockHeight;
+
+    game.camera.viewfinder.position = Vector2(
+      game.width / 2,
+      current.y + (newY - current.y) * 0.2,
+    );
   }
 
   Future<void> _gameOver() async {
