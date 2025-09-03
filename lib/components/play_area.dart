@@ -3,6 +3,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
+import 'package:stapelmeister/config.dart';
 import 'package:stapelmeister/stapelmeister.dart';
 
 class PlayArea extends RectangleComponent
@@ -15,7 +16,18 @@ class PlayArea extends RectangleComponent
 
   @override
   FutureOr<void> onLoad() async {
-    size = Vector2(game.width, game.height);
+    final rect = game.camera.visibleWorldRect;
+    position = Vector2(rect.left, rect.top - blockHeight);
+    size = Vector2(rect.width, rect.height + blockHeight);
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    // Always fill the camera's viewport
+    final rect = game.camera.visibleWorldRect;
+    position = Vector2(rect.left, rect.top - blockHeight);
+    size = Vector2(rect.width, rect.height + blockHeight);
   }
 
   @override
