@@ -40,7 +40,7 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
       )..state = BlockState.landed;
 
       _stack.add(baseBlock);
-      await game.world.add(baseBlock);
+      await add(baseBlock);
       currentHeight -= blockHeight;
     }
 
@@ -69,7 +69,7 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     );
 
     _current = block;
-    await game.world.add(block);
+    await add(block);
   }
 
   void drop() {
