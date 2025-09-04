@@ -117,6 +117,8 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     }
     _current = null;
 
+    game.scoreService.increment();
+
     _spawnNext();
   }
 
