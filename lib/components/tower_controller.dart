@@ -1,7 +1,8 @@
 // lib/components/tower_controller.dart
 import 'dart:async';
-import 'dart:ui';
 import 'package:flame/components.dart' hide Block;
+import 'package:flame/effects.dart';
+import 'package:flutter/material.dart';
 import 'package:stapelmeister/components/block.dart';
 import 'package:stapelmeister/config.dart';
 import 'package:stapelmeister/stapelmeister.dart';
@@ -107,7 +108,12 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     removed.removeFromParent();
 
     for (final block in _stack) {
-      block.position.y += blockHeight;
+      block.add(
+        MoveByEffect(
+          Vector2(0, blockHeight),
+          EffectController(duration: 0.25, curve: Curves.easeOut),
+        ),
+      );
     }
     _current = null;
 
