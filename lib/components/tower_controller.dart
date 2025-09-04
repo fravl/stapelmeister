@@ -22,6 +22,8 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
 
   double get _nextLandingY => game.height - (_stack.length) * blockHeight;
 
+  var _nextSpawnXPosition = horizontalMargin;
+
   Future<void> newGame() async {
     await _clearAll();
     // Add base block
@@ -36,7 +38,6 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
         leftBound: _leftBound,
         rightBound: _rightBound,
         targetY: currentHeight,
-        direction: 0,
         paint: Paint()..color = const Color(0xFF264653),
       )..state = BlockState.landed;
 
@@ -54,17 +55,15 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     final targetY = _nextLandingY;
 
     final width = last.size.x;
-    final startX = _leftBound;
     final startY = targetY - spawnDropGap;
 
     final block = Block(
-      position: Vector2(startX, startY),
+      position: Vector2(_nextSpawnXPosition, startY),
       size: Vector2(width, blockHeight),
       horizontalSpeed: _movementSpeed,
       leftBound: _leftBound,
       rightBound: _rightBound,
       targetY: targetY,
-      direction: 1.0,
       onLanded: _onCurrentLanded,
       paint: Paint()..color = const Color(0xFFE76F51),
     );
@@ -118,6 +117,10 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     _current = null;
 
     game.scoreService.increment();
+
+    _nextSpawnXPosition = _nextSpawnXPosition == _leftBound
+        ? _rightBound - current.size.x
+        : _leftBound;
 
     _spawnNext();
   }
