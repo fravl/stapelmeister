@@ -4,6 +4,7 @@ import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stapelmeister/components/block.dart';
+import 'package:stapelmeister/components/debris.dart';
 import 'package:stapelmeister/config.dart';
 import 'package:stapelmeister/services/score_service.dart';
 import 'package:stapelmeister/stapelmeister.dart';
@@ -103,6 +104,27 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     if (current.size.x < minWidthToContinue) {
       _gameOver();
       return;
+    }
+
+    if (!isPerfect) {
+      // Create debris for the cut-off part
+      final cutWidth = last.size.x - overlapWidth;
+
+      final cutX = current.right < last.right
+          ? last.left
+          : overlapRight;
+
+      final debris = Debris(
+        position: Vector2(cutX, current.position.y),
+        size: Vector2(cutWidth, current.size.y),
+        paint: Paint()..color = current.paint.color,
+        velocity: Vector2(
+          current.right < last.right ? -200 : 200,
+          -75,
+        ),
+      );
+
+      game.world.add(debris);
     }
 
     _stack.add(current);
