@@ -18,7 +18,7 @@ class ScoreOverlay extends StatelessWidget {
             '${scoreService.score.value}',
             style: const TextStyle(
               fontFamily: 'PressStart2P',
-              fontSize: 32,
+              fontSize: 96,
               color: Colors.white,
               shadows: [
                 Shadow(
