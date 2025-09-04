@@ -1,10 +1,11 @@
-// lib/components/tower_controller.dart
 import 'dart:async';
 import 'package:flame/components.dart' hide Block;
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:stapelmeister/components/block.dart';
 import 'package:stapelmeister/config.dart';
+import 'package:stapelmeister/services/score_service.dart';
 import 'package:stapelmeister/stapelmeister.dart';
 
 class TowerController extends Component with HasGameReference<Stapelmeister> {
@@ -25,6 +26,8 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
   var _nextSpawnXPosition = horizontalMargin;
 
   Future<void> newGame() async {
+    Get.find<ScoreService>().reset();
+
     await _clearAll();
     // Add base block
     final baseX = (game.width - baseWidth) / 2;
@@ -116,7 +119,7 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     }
     _current = null;
 
-    game.scoreService.increment();
+    Get.find<ScoreService>().increment();
 
     _nextSpawnXPosition = _nextSpawnXPosition == _leftBound
         ? _rightBound - current.size.x

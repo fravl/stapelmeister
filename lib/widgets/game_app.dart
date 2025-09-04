@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:stapelmeister/stapelmeister.dart';
+import 'package:stapelmeister/widgets/score_overlay.dart';
 
 import '../config.dart';
 
@@ -44,7 +45,12 @@ class _GameAppState extends State<GameApp> {
                         child: SizedBox(
                           width: gameWidth,
                           height: gameHeight,
-                          child: GameWidget(game: game),
+                          child: GameWidget(
+                            game: game,
+                            overlayBuilderMap: {
+                              'ScoreOverlay': (_, __) => const ScoreOverlay(),
+                            },
+                          ),
                         ),
                       ),
                     ),

@@ -1,8 +1,8 @@
-class ScoreService {
-  int _score = 0;
+import 'package:get/get.dart';
 
-  int get score => _score;
+class ScoreService extends GetxController {
+  var score = 0.obs;
 
-  void reset() => _score = 0;
-  void increment([int amount = 1]) => _score += amount;
+  void reset() => score.value = 0;
+  void increment([int amount = 1]) => score.value += amount;
 }
