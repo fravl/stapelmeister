@@ -1,4 +1,3 @@
-// lib/components/block.dart
 import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:stapelmeister/config.dart';
