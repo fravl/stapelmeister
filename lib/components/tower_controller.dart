@@ -15,45 +15,42 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
   Block? _current;
 
   double get _movementSpeed => levelSpeeds[level]!;
-  double get _landingBaseY => game.height - baseBottomMargin;
 
   double get _leftBound => horizontalMargin;
   double get _rightBound => game.width - horizontalMargin;
 
-  double get _nextLandingY => _landingBaseY - (_stack.length) * blockHeight;
+  double get _nextLandingY => game.height - (_stack.length) * blockHeight;
 
   Future<void> newGame() async {
     await _clearAll();
     // Add base block
     final baseX = (game.width - baseWidth) / 2;
-    final baseY = _landingBaseY - blockHeight;
 
-    final baseBlock = Block(
-      position: Vector2(baseX, baseY),
-      size: Vector2(baseWidth, blockHeight),
-      horizontalSpeed: 0,
-      leftBound: _leftBound,
-      rightBound: _rightBound,
-      targetY: baseY,
-      direction: 0,
-      paint: Paint()..color = const Color(0xFF264653),
-    )..state = BlockState.landed;
+    var currentHeight = game.height;
+    while (currentHeight > game.height / 2) {
+      final baseBlock = Block(
+        position: Vector2(baseX, currentHeight),
+        size: Vector2(baseWidth, blockHeight),
+        horizontalSpeed: 0,
+        leftBound: _leftBound,
+        rightBound: _rightBound,
+        targetY: currentHeight,
+        direction: 0,
+        paint: Paint()..color = const Color(0xFF264653),
+      )..state = BlockState.landed;
 
-    _stack.add(baseBlock);
-    await game.world.add(baseBlock);
-
-    game.camera.viewfinder.position = Vector2(
-      game.width / 2,
-      baseBlock.position.y,
-    );
+      _stack.add(baseBlock);
+      await game.world.add(baseBlock);
+      currentHeight -= blockHeight;
+    }
 
     // Spawn first moving block
     _spawnNext();
   }
 
-  void _spawnNext() {
+  Future<void> _spawnNext() async {
     final last = _stack.last;
-    final targetY = _nextLandingY - blockHeight;
+    final targetY = _nextLandingY;
 
     final width = last.size.x;
     final startX = _leftBound;
@@ -72,7 +69,7 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     );
 
     _current = block;
-    add(block);
+    await game.world.add(block);
   }
 
   void drop() {
@@ -106,23 +103,15 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     }
 
     _stack.add(current);
+    final removed = _stack.removeAt(0);
+    removed.removeFromParent();
+
+    for (final block in _stack) {
+      block.position.y += blockHeight;
+    }
     _current = null;
 
-    _stepCamera();
-
     _spawnNext();
-  }
-
-  void _stepCamera() {
-    // Move the camera up by one block height
-    final current = game.camera.viewfinder.position;
-
-    final newY = current.y - blockHeight;
-
-    game.camera.viewfinder.position = Vector2(
-      game.width / 2,
-      current.y + (newY - current.y) * 0.2,
-    );
   }
 
   Future<void> _gameOver() async {
