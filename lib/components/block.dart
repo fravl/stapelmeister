@@ -19,10 +19,10 @@ class Block extends RectangleComponent with HasGameReference<Stapelmeister> {
     this.onLanded,
     Paint? paint,
   }) : super(
-          position: position,
-          size: size,
-          paint: paint ?? (Paint()..color = const Color(0xFF2a9d8f)),
-        );
+         position: position,
+         size: size,
+         paint: paint ?? (Paint()..color = const Color(0xFF2a9d8f)),
+       );
 
   double horizontalSpeed;
   final double leftBound;
@@ -73,5 +73,17 @@ class Block extends RectangleComponent with HasGameReference<Stapelmeister> {
         // no-op
         break;
     }
+  }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+
+    final outlinePaint = Paint()
+      ..color = const Color(0xFF000000)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+
+    canvas.drawRect(size.toRect(), outlinePaint);
   }
 }
