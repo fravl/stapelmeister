@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:stapelmeister/components/block.dart';
 import 'package:stapelmeister/components/debris.dart';
 import 'package:stapelmeister/config.dart';
+import 'package:stapelmeister/services/brick_painter.dart';
 import 'package:stapelmeister/services/score_service.dart';
 import 'package:stapelmeister/stapelmeister.dart';
 
@@ -28,7 +29,7 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
 
   Future<void> newGame() async {
     Get.find<ScoreService>().reset();
-
+    BrickPainter.reset();
     await _clearAll();
     // Add base block
     final baseX = (game.width - baseWidth) / 2;
@@ -42,7 +43,7 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
         leftBound: _leftBound,
         rightBound: _rightBound,
         targetY: currentHeight,
-        paint: Paint()..color = const Color(0xFF264653),
+        paint: BrickPainter.nextPaint(),
       )..state = BlockState.landed;
 
       _stack.add(baseBlock);
@@ -69,7 +70,7 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
       rightBound: _rightBound,
       targetY: targetY,
       onLanded: _onCurrentLanded,
-      paint: Paint()..color = const Color(0xFFE76F51),
+      paint: BrickPainter.nextPaint(),
     );
 
     _current = block;
@@ -117,7 +118,7 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
       final debris = Debris(
         position: Vector2(cutX, current.position.y),
         size: Vector2(cutWidth, current.size.y),
-        paint: Paint()..color = current.paint.color,
+        paint: BrickPainter.paintFromBlock(current),
         velocity: Vector2(
           current.right < last.right ? -200 : 200,
           -75,
