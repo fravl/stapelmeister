@@ -16,6 +16,8 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
   final List<Block> _stack = [];
   Block? _current;
 
+  var baseComplete = false;
+
   double get _movementSpeed => levelSpeeds[game.currentLevel]!;
 
   double get _leftBound => horizontalMargin;
@@ -26,6 +28,7 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
   var _nextSpawnXPosition = horizontalMargin;
 
   Future<void> buildBase() async {
+    baseComplete = false;
     BrickPainter.reset();
     await _clearAll();
 
@@ -44,32 +47,36 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
       )..state = BlockState.landed;
 
       _stack.add(baseBlock);
-      await add(baseBlock);
+      currentHeight -= blockHeight;
+    }
 
-      // Temporarily use center coordinates for animation
-      final originalAnchor = baseBlock.anchor;
-      final originalPosition = baseBlock.position.clone();
+    await playBaseIntro();
+    baseComplete = true;
+  }
 
-      baseBlock.anchor = Anchor.center;
-      baseBlock.position = Vector2(
-        baseX + baseWidth / 2,
-        currentHeight + blockHeight / 2,
-      );
-      baseBlock.scale = Vector2.all(0);
+  Future<void> playBaseIntro() async {
+    for (final block in _stack) {
+      await add(block);
 
-      baseBlock.add(
+      // Start small, then pop in
+      block.scale = Vector2.zero();
+      block.anchor = Anchor.center;
+      final originalPos = block.position.clone();
+      block.position += block.size / 2; // shift for center anchor
+
+      block.add(
         ScaleEffect.to(
           Vector2.all(1.1),
           EffectController(duration: 0.15, curve: Curves.easeOut),
           onComplete: () {
-            baseBlock.add(
+            block.add(
               ScaleEffect.to(
                 Vector2.all(1.0),
                 EffectController(duration: 0.1, curve: Curves.easeIn),
                 onComplete: () {
-                  // Restore original coordinates
-                  baseBlock.anchor = originalAnchor;
-                  baseBlock.position = originalPosition;
+                  // restore to top-left anchor after anim
+                  block.anchor = Anchor.topLeft;
+                  block.position = originalPos;
                 },
               ),
             );
@@ -77,12 +84,14 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
         ),
       );
 
-      await Future.delayed(const Duration(milliseconds: 30));
-      currentHeight -= blockHeight;
+      await Future.delayed(const Duration(milliseconds: 60));
     }
   }
 
   Future<void> newGame() async {
+    while(!baseComplete) {
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    }
     _spawnNext();
   }
 

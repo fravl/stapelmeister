@@ -22,9 +22,9 @@ class Stapelmeister extends FlameGame {
 
   late final TowerController tower;
 
-  void reset() {
+  Future<void> reset() async {
     Get.find<ScoreService>().reset();
-    tower.buildBase();
+    await tower.buildBase();
   }
 
   void gameOver() {
