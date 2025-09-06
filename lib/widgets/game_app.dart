@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:stapelmeister/stapelmeister.dart';
+import 'package:stapelmeister/widgets/results_overlay.dart';
 import 'package:stapelmeister/widgets/score_overlay.dart';
 
 import '../config.dart';
@@ -49,6 +50,12 @@ class _GameAppState extends State<GameApp> {
                             game: game,
                             overlayBuilderMap: {
                               'ScoreOverlay': (_, __) => const ScoreOverlay(),
+                              'Results': (_, __) => ResultsOverlay(
+                                onRetry: () {
+                                  game.overlays.remove('Results');
+                                  game.start();
+                                },
+                              ),
                             },
                           ),
                         ),

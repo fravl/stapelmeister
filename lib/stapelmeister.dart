@@ -19,6 +19,17 @@ class Stapelmeister extends FlameGame {
 
   late final TowerController tower;
 
+  void gameOver() {
+    overlays.remove('ScoreOverlay');
+    overlays.add('Results');
+  }
+
+  void start() {
+    overlays.remove('Results');
+    tower.newGame();
+    overlays.add('ScoreOverlay');
+  }
+
   @override
   FutureOr<void> onLoad() async {
     super.onLoad();

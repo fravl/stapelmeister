@@ -153,7 +153,7 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
 
   Future<void> _gameOver() async {
     await Future<void>.delayed(const Duration(milliseconds: 400));
-    await newGame();
+    game.gameOver();
   }
 
   Future<void> _clearAll() async {
