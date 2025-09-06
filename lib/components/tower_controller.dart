@@ -28,10 +28,10 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
   Future<void> buildBase() async {
     BrickPainter.reset();
     await _clearAll();
-    
-    final baseX = (game.width - baseWidth) / 2;
 
+    final baseX = (game.width - baseWidth) / 2;
     var currentHeight = game.height;
+
     while (currentHeight > game.height / 2) {
       final baseBlock = Block(
         position: Vector2(baseX, currentHeight),
@@ -45,15 +45,44 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
 
       _stack.add(baseBlock);
       await add(baseBlock);
+
+      // Temporarily use center coordinates for animation
+      final originalAnchor = baseBlock.anchor;
+      final originalPosition = baseBlock.position.clone();
+
+      baseBlock.anchor = Anchor.center;
+      baseBlock.position = Vector2(
+        baseX + baseWidth / 2,
+        currentHeight + blockHeight / 2,
+      );
+      baseBlock.scale = Vector2.all(0);
+
+      baseBlock.add(
+        ScaleEffect.to(
+          Vector2.all(1.1),
+          EffectController(duration: 0.15, curve: Curves.easeOut),
+          onComplete: () {
+            baseBlock.add(
+              ScaleEffect.to(
+                Vector2.all(1.0),
+                EffectController(duration: 0.1, curve: Curves.easeIn),
+                onComplete: () {
+                  // Restore original coordinates
+                  baseBlock.anchor = originalAnchor;
+                  baseBlock.position = originalPosition;
+                },
+              ),
+            );
+          },
+        ),
+      );
+
+      await Future.delayed(const Duration(milliseconds: 30));
       currentHeight -= blockHeight;
     }
   }
 
   Future<void> newGame() async {
-    Get.find<ScoreService>().reset();
-    await buildBase();
-
-    // Spawn first moving block
     _spawnNext();
   }
 

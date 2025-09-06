@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:get/get.dart';
 import 'package:stapelmeister/components/play_area.dart';
 import 'package:stapelmeister/components/tower_controller.dart';
 import 'package:stapelmeister/config.dart';
+import 'package:stapelmeister/services/score_service.dart';
 
 class Stapelmeister extends FlameGame {
   Stapelmeister()
@@ -19,6 +21,11 @@ class Stapelmeister extends FlameGame {
   double get height => size.y;
 
   late final TowerController tower;
+
+  void reset() {
+    Get.find<ScoreService>().reset();
+    tower.buildBase();
+  }
 
   void gameOver() {
     overlays.remove('ScoreOverlay');
@@ -44,6 +51,6 @@ class Stapelmeister extends FlameGame {
     await world.add(tower);
 
     overlays.add('Start');
-    await tower.buildBase();
+    unawaited(tower.buildBase());
   }
 }

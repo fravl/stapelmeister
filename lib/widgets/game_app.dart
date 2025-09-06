@@ -62,14 +62,16 @@ class _GameAppState extends State<GameApp> {
                                 onRetry: () {
                                   game.overlays.remove('Results');
                                   game.overlays.add('LevelSelection');
+                                  game.reset();
                                 },
                               ),
-                              'LevelSelection': (_, __) => LevelSelectionOverlay(
-                                onSelect: (level) {
-                                  game.overlays.remove('LevelSelection');
-                                  game.start(level);
-                                },
-                              ),
+                              'LevelSelection': (_, __) =>
+                                  LevelSelectionOverlay(
+                                    onSelect: (level) {
+                                      game.overlays.remove('LevelSelection');
+                                      game.start(level);
+                                    },
+                                  ),
                             },
                           ),
                         ),
