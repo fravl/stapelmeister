@@ -59,6 +59,7 @@ class _GameAppState extends State<GameApp> {
                               ),
                               'ScoreOverlay': (_, __) => const ScoreOverlay(),
                               'Results': (_, __) => ResultsOverlay(
+                                level: game.currentLevel,
                                 onRetry: () {
                                   game.overlays.remove('Results');
                                   game.overlays.add('LevelSelection');

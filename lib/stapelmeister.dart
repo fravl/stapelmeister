@@ -28,6 +28,7 @@ class Stapelmeister extends FlameGame {
   }
 
   void gameOver() {
+    Get.find<ScoreService>().saveHighScore(currentLevel);
     overlays.remove('ScoreOverlay');
     overlays.add('Results');
   }
