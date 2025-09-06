@@ -124,6 +124,14 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     final overlapWidth = overlapRight - overlapLeft;
 
     if (overlapWidth <= 0) {
+      remove(current);
+      final debris = Debris(
+        position: current.position.clone(),
+        size: current.size.clone(),
+        paint: current.paint,
+        velocity: Vector2(0, -200),
+      );
+      game.world.add(debris);
       _gameOver();
       return;
     }
@@ -134,6 +142,14 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     current.size.x = isPerfect ? last.size.x : overlapWidth;
 
     if (current.size.x < minWidthToContinue) {
+      remove(current);
+      final debris = Debris(
+        position: current.position.clone(),
+        size: current.size.clone(),
+        paint: current.paint,
+        velocity: Vector2(0, -200),
+      );
+      game.world.add(debris);
       _gameOver();
       return;
     }
