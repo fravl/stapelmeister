@@ -112,6 +112,21 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     _current?.startDrop();
   }
 
+  void _createDebris({
+    required Vector2 position,
+    required Vector2 size,
+    required Paint paint,
+    required Vector2 velocity,
+  }) {
+    final debris = Debris(
+      position: position.clone(),
+      size: size.clone(),
+      paint: paint,
+      velocity: velocity,
+    );
+    game.world.add(debris);
+  }
+
   void _onCurrentLanded() {
     final current = _current!;
     final last = _stack.last;
@@ -125,13 +140,12 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
 
     if (overlapWidth <= 0) {
       remove(current);
-      final debris = Debris(
-        position: current.position.clone(),
-        size: current.size.clone(),
+      _createDebris(
+        position: current.position,
+        size: current.size,
         paint: current.paint,
         velocity: Vector2(0, -200),
       );
-      game.world.add(debris);
       _gameOver();
       return;
     }
@@ -143,13 +157,12 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
 
     if (current.size.x < minWidthToContinue) {
       remove(current);
-      final debris = Debris(
-        position: current.position.clone(),
-        size: current.size.clone(),
+      _createDebris(
+        position: current.position,
+        size: current.size,
         paint: current.paint,
         velocity: Vector2(0, -200),
       );
-      game.world.add(debris);
       _gameOver();
       return;
     }
@@ -157,17 +170,13 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     if (!isPerfect) {
       // Create debris for the cut-off part
       final cutWidth = last.size.x - overlapWidth;
-
       final cutX = current.right < last.right ? last.left : overlapRight;
-
-      final debris = Debris(
+      _createDebris(
         position: Vector2(cutX, current.position.y),
         size: Vector2(cutWidth, current.size.y),
         paint: BrickPainter.paintFromBlock(current),
         velocity: Vector2(current.right < last.right ? -200 : 200, -75),
       );
-
-      game.world.add(debris);
     }
 
     _stack.add(current);
