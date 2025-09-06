@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stapelmeister/services/score_service.dart';
+import 'package:stapelmeister/theme/retro_text.dart';
 
 class ScoreOverlay extends StatelessWidget {
   const ScoreOverlay({super.key});
@@ -16,18 +17,7 @@ class ScoreOverlay extends StatelessWidget {
         child: Obx(
           () => Text(
             '${scoreService.score.value}',
-            style: const TextStyle(
-              fontFamily: 'PressStart2P',
-              fontSize: 96,
-              color: Colors.white,
-              shadows: [
-                Shadow(
-                  blurRadius: 4,
-                  color: Colors.black,
-                  offset: Offset(2, 2),
-                ),
-              ],
-            ),
+            style: retroText(96)
           ),
         ),
       ),

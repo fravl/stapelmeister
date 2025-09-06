@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stapelmeister/services/score_service.dart';
+import 'package:stapelmeister/theme/retro_button.dart';
+import 'package:stapelmeister/theme/retro_text.dart';
 
 class ResultsOverlay extends StatelessWidget {
   final VoidCallback onRetry;
@@ -14,24 +16,29 @@ class ResultsOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     final score = Get.find<ScoreService>().score;
 
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text("Game Over", style: Theme.of(context).textTheme.headlineLarge),
-          const SizedBox(height: 12),
-          Text("Score: $score", style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton(
-                onPressed: onRetry,
-                child: const Text("Retry"),
-              ),
-            ],
-          ),
-        ],
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 128),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text("GAME OVER", style: retroText(64)),
+            const SizedBox(height: 16),
+            Text("SCORE: $score", style: retroText(32)),
+            const SizedBox(height: 32),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                  style: retroButtonStyle(),
+                  onPressed: onRetry,
+                  child: Text("RETRY", style: retroText(64)),
+                ),            
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
