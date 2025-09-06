@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:stapelmeister/stapelmeister.dart';
+import 'package:stapelmeister/widgets/level_selection_overlay.dart';
 import 'package:stapelmeister/widgets/results_overlay.dart';
 import 'package:stapelmeister/widgets/score_overlay.dart';
 
@@ -53,7 +54,13 @@ class _GameAppState extends State<GameApp> {
                               'Results': (_, __) => ResultsOverlay(
                                 onRetry: () {
                                   game.overlays.remove('Results');
-                                  game.start();
+                                  game.overlays.add('LevelSelection');
+                                },
+                              ),
+                              'LevelSelection': (_, __) => LevelSelectionOverlay(
+                                onSelect: (level) {
+                                  game.overlays.remove('LevelSelection');
+                                  game.start(level);
                                 },
                               ),
                             },

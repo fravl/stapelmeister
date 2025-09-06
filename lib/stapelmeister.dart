@@ -13,6 +13,7 @@ class Stapelmeister extends FlameGame {
           height: gameHeight,
         ),
       );
+  var currentLevel = Level.easy;
 
   double get width => size.x;
   double get height => size.y;
@@ -24,7 +25,8 @@ class Stapelmeister extends FlameGame {
     overlays.add('Results');
   }
 
-  void start() {
+  void start(Level level) {
+    currentLevel = level;
     overlays.remove('Results');
     tower.newGame();
     overlays.add('ScoreOverlay');

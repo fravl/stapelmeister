@@ -11,14 +11,12 @@ import 'package:stapelmeister/services/score_service.dart';
 import 'package:stapelmeister/stapelmeister.dart';
 
 class TowerController extends Component with HasGameReference<Stapelmeister> {
-  TowerController({this.level = Level.easy});
-
-  final Level level;
+  TowerController();
 
   final List<Block> _stack = [];
   Block? _current;
 
-  double get _movementSpeed => levelSpeeds[level]!;
+  double get _movementSpeed => levelSpeeds[game.currentLevel]!;
 
   double get _leftBound => horizontalMargin;
   double get _rightBound => game.width - horizontalMargin;
