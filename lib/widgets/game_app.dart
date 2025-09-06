@@ -4,6 +4,7 @@ import 'package:stapelmeister/stapelmeister.dart';
 import 'package:stapelmeister/widgets/level_selection_overlay.dart';
 import 'package:stapelmeister/widgets/results_overlay.dart';
 import 'package:stapelmeister/widgets/score_overlay.dart';
+import 'package:stapelmeister/widgets/start_screen.dart';
 
 import '../config.dart';
 
@@ -50,6 +51,12 @@ class _GameAppState extends State<GameApp> {
                           child: GameWidget(
                             game: game,
                             overlayBuilderMap: {
+                              'Start': (_, __) => StartOverlay(
+                                onStart: () {
+                                  game.overlays.remove('Start');
+                                  game.overlays.add('LevelSelection');
+                                },
+                              ),
                               'ScoreOverlay': (_, __) => const ScoreOverlay(),
                               'Results': (_, __) => ResultsOverlay(
                                 onRetry: () {

@@ -43,6 +43,7 @@ class Stapelmeister extends FlameGame {
     tower = TowerController();
     await world.add(tower);
 
-    overlays.add('ScoreOverlay');
+    overlays.add('Start');
+    await tower.buildBase();
   }
 }

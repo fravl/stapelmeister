@@ -25,11 +25,10 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
 
   var _nextSpawnXPosition = horizontalMargin;
 
-  Future<void> newGame() async {
-    Get.find<ScoreService>().reset();
+  Future<void> buildBase() async {
     BrickPainter.reset();
     await _clearAll();
-    // Add base block
+    
     final baseX = (game.width - baseWidth) / 2;
 
     var currentHeight = game.height;
@@ -48,6 +47,11 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
       await add(baseBlock);
       currentHeight -= blockHeight;
     }
+  }
+
+  Future<void> newGame() async {
+    Get.find<ScoreService>().reset();
+    await buildBase();
 
     // Spawn first moving block
     _spawnNext();
@@ -109,18 +113,13 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
       // Create debris for the cut-off part
       final cutWidth = last.size.x - overlapWidth;
 
-      final cutX = current.right < last.right
-          ? last.left
-          : overlapRight;
+      final cutX = current.right < last.right ? last.left : overlapRight;
 
       final debris = Debris(
         position: Vector2(cutX, current.position.y),
         size: Vector2(cutWidth, current.size.y),
         paint: BrickPainter.paintFromBlock(current),
-        velocity: Vector2(
-          current.right < last.right ? -200 : 200,
-          -75,
-        ),
+        velocity: Vector2(current.right < last.right ? -200 : 200, -75),
       );
 
       game.world.add(debris);
@@ -160,10 +159,5 @@ class TowerController extends Component with HasGameReference<Stapelmeister> {
     }
     _stack.clear();
     _current = null;
-  }
-
-  @override
-  FutureOr<void> onLoad() async {
-    await newGame();
   }
 }
