@@ -16,5 +16,5 @@ const levelSpeeds = {
 };
 
 const dropSpeed = 1200.0; // vertical drop speed (px/s)
-const minWidthToContinue = 8.0; // game over if trimmed below this
-const perfectTolerance = 0.5;   // snap perfects within this tolerance (optional spice)
+const minWidthToContinue = 5.0; // game over if trimmed below this
+const perfectTolerance = 5.0;   // snap perfects within this tolerance
